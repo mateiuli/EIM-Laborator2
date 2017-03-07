@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 
@@ -62,7 +63,89 @@ public class LifecycleMonitorActivity extends AppCompatActivity {
         Button cancelButton = (Button) findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(buttonClickListener);
 
-        Log.d(Constants.TAG, "onCreate() method was invoked without a previous state");
+        if(savedInstanceState == null)
+            Log.d(Constants.TAG, "onCreate() method was invoked without a previous state");
+        else
+            Log.d(Constants.TAG, "onCreate() method was invoked with a previous state");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(Constants.TAG, "onStart() method was invoked");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(Constants.TAG, "onResume() method was invoked");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(Constants.TAG, "onPause() method was invoked");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // ...
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(Constants.TAG, "onStop() method was invoked");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(Constants.TAG, "onRestart() method was invoked");
+    }
+
+    // metode folosite pentru salvarea si restaurarea starii
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        // apelarea metodei din activitatea parinte este recomandata, dar nu obligatorie
+        super.onSaveInstanceState(savedInstanceState);
+        Log.d(Constants.TAG, "onSaveInstanceState() method was invoked");
+
+        EditText usernameEditText = (EditText)findViewById(R.id.username_edit_text);
+        EditText passwordEditText = (EditText)findViewById(R.id.password_edit_text);
+        String username = usernameEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+
+        CheckBox checkbox = (CheckBox) findViewById(R.id.remember_me_checkbox);
+        if(checkbox.isChecked()) {
+            savedInstanceState.putString(Constants.USERNAME_EDIT_TEXT, username);
+            savedInstanceState.putString(Constants.PASSWORD_EDIT_TEXT, password);
+            savedInstanceState.putBoolean(Constants.REMEMBER_ME_CHECKBOX, checkbox.isChecked());
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        // apelarea metodei din activitatea parinte este recomandata, dar nu obligatorie
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.d(Constants.TAG, "onRestoreInstanceState() method was invoked");
+
+        if(savedInstanceState == null)
+            return;
+
+        String username = (String) savedInstanceState.get(Constants.USERNAME_EDIT_TEXT);
+        String password = (String) savedInstanceState.get(Constants.PASSWORD_EDIT_TEXT);
+        Boolean checked = (Boolean) savedInstanceState.get(Constants.REMEMBER_ME_CHECKBOX);
+
+        EditText usernameEditText = (EditText)findViewById(R.id.username_edit_text);
+        EditText passwordEditText = (EditText)findViewById(R.id.password_edit_text);
+        CheckBox checkbox = (CheckBox) findViewById(R.id.remember_me_checkbox);
+
+        usernameEditText.setText(username);
+        passwordEditText.setText(password);
+        checkbox.setChecked(checked);
     }
 
 }
